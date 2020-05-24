@@ -1,9 +1,9 @@
 from struct import unpack
 
-from lib.modtag.tracker import *
+from pytracker.tracker import *
 
 
-class ModuleFormat():
+class ModuleFormat:
     """Interface for different module formats."""
 
     @property
@@ -11,12 +11,12 @@ class ModuleFormat():
         raise NotImplementedError("module format must have a name")
 
     @classmethod
-    def identify(cls, bytes):
+    def identify(cls, songbytes):
         """Checks if the given bytes are in this very format"""
         raise NotImplementedError("identify must be implemented")
 
     @classmethod
-    def load_module(cls, bytes, options=None):
+    def load_module(cls, songbytes, options=None):
         """Returns a TrackerSong from file data"""
         raise NotImplementedError("load_module must be implemented")
 
@@ -61,7 +61,7 @@ class ProtrackerFormat(ModuleFormat):
         pitch2note = {
             # Octave 1
             856: 'C-1', 808: 'C#1', 762: 'D-1', 720: 'D#1', 678: 'E-1',
-            640: 'F-1',  604: 'F#1', 570: 'G-1', 538: 'G#1 ', 508: 'A-1',
+            640: 'F-1', 604: 'F#1', 570: 'G-1', 538: 'G#1 ', 508: 'A-1',
             480: 'A#1', 453: 'B-1',
             # Octave 2
             428: 'C-2', 404: 'C#2', 381: 'D-2', 360: 'D#2', 339: 'E-2',
@@ -148,7 +148,7 @@ class ProtrackerFormat(ModuleFormat):
             song.instruments.append(Instrument(sample))
 
             if options['verbose']:
-                if (len(sample.name) > 0 or sample.length > 0):
+                if len(sample.name) > 0 or sample.length > 0:
                     print(str(i), " : ", sample.name)
                     print("\tlength: ", str(sample.length))
                     print("\tvolume: ", str(sample.volume))

@@ -6,7 +6,7 @@ import hashlib
 import string
 import wave
 
-from lib.modtag.modtag import load_module
+from pytracker.modtag import load_module
 
 parser = argparse.ArgumentParser(description='Rip samples from Amiga modules')
 parser.add_argument('module', help='The module where to rip samples from')

@@ -1,7 +1,6 @@
-﻿from lib.modtag.format import ProtrackerFormat
+﻿from pytracker.format import ProtrackerFormat
 
-formats = []
-formats.append(ProtrackerFormat())
+formats = [ProtrackerFormat()]
 
 
 class InvalidModuleException(Exception):
