@@ -1,4 +1,4 @@
-﻿from struct import unpack
+from struct import unpack
 
 from lib.modtag.tracker import *
 
@@ -57,6 +57,25 @@ class ProtrackerFormat(ModuleFormat):
         return orderlist
 
     @classmethod
+    def pitch_note(cls, pitch):
+        pitch2note = {
+            # Octave 1
+            856: 'C-1', 808: 'C#1', 762: 'D-1', 720: 'D#1', 678: 'E-1',
+            640: 'F-1',  604: 'F#1', 570: 'G-1', 538: 'G#1 ', 508: 'A-1',
+            480: 'A#1', 453: 'B-1',
+            # Octave 2
+            428: 'C-2', 404: 'C#2', 381: 'D-2', 360: 'D#2', 339: 'E-2',
+            320: 'F-2', 302: 'F#2', 285: 'G-2', 269: 'G#2', 254: 'A-2',
+            240: 'A#2', 226: 'B-2',
+            # Octave 3
+            214: 'C-3', 202: 'C#3', 190: 'D-3', 180: 'D#3', 170: 'E-3',
+            160: 'F-3', 151: 'F#3', 143: 'G-3', 135: 'G#3', 127: 'A-3',
+            120: 'A#3', 113: 'B-3',
+        }
+        if pitch in pitch2note:
+            return pitch2note[pitch]
+
+    @classmethod
     def parse_note(cls, notebytes):
         note = Note()
 
@@ -70,6 +89,8 @@ class ProtrackerFormat(ModuleFormat):
         note.parameters = effect & 0xff
         note.effect = effect >> 8
         note.pitch = ((a & 0xf) << 8) + b
+        if note.pitch != 0:
+            note.note = ProtrackerFormat.pitch_note(note.pitch)
 
         return note
 

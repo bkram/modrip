@@ -1,4 +1,4 @@
-﻿class TrackerSong:
+class TrackerSong:
     """A self-contained tracker song."""
     PROTRACKER = "MOD"
     UNKNOWN = "???"
@@ -28,6 +28,7 @@ class Note:
         self.effect = 0
         self.parameters = 0
         self.instrument = 0
+        self.note = '000'
 
 
 class Instrument:
