@@ -10,7 +10,7 @@ class TestSequence(unittest.TestCase):
         self.a = 0
 
     def load_test_module(self):
-        f = open("hyperbased.mod", "rb")
+        f = open("./testmodules/hyperbased.mod", "rb")
         chunk = f.read()
         f.close()
         return chunk
