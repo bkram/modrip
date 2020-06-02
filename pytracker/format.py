@@ -23,6 +23,32 @@ class ModuleFormat:
 
 class ProtrackerFormat(ModuleFormat):
     name = "Protracker"
+    pitchToNote = {
+        # Octave 0
+        1712: 'C-0', 1616: 'C#0', 1525: 'D-0', 1440: 'D#0', 1357: 'E-0',
+        1281: 'F-0', 1209: 'F#0', 1141: 'G-0', 1077: 'G#0', 1017: 'A-0',
+        961: 'A#0', 907: 'B-0',
+        # Octave 1
+        856: 'C-1', 808: 'C#1', 762: 'D-1', 720: 'D#1', 678: 'E-1',
+        640: 'F-1', 604: 'F#1', 570: 'G-1', 538: 'G#1 ', 508: 'A-1',
+        480: 'A#1', 453: 'B-1',
+        # Octave 2
+        428: 'C-2', 404: 'C#2', 381: 'D-2', 360: 'D#2', 339: 'E-2',
+        320: 'F-2', 302: 'F#2', 285: 'G-2', 269: 'G#2', 254: 'A-2',
+        240: 'A#2', 226: 'B-2',
+        # Octave 3
+        214: 'C-3', 202: 'C#3', 190: 'D-3', 180: 'D#3', 170: 'E-3',
+        160: 'F-3', 151: 'F#3', 143: 'G-3', 135: 'G#3', 127: 'A-3',
+        120: 'A#3', 113: 'B-3',
+        # Octave 4
+        107: 'C-4', 101: 'C#4', 95: 'D-4', 90: 'D#4', 85: 'E-4',
+        80: 'F-4', 76: 'F#4', 71: 'G-4', 67: 'G#4', 64: 'A-4',
+        60: 'A#4', 57: 'B-4',
+        # Octave 5
+        53: 'C-5', 50: 'C#5', 47: 'D-5', 45: 'D#5', 42: 'E-5',
+        40: 'F-5', 37: 'F#5', 35: 'G-5', 33: 'G#5', 31: ' A-5',
+        30: 'A#5', 28: 'B-5',
+    }
 
     @classmethod
     def check_format(cls, modulebytes):
@@ -50,7 +76,7 @@ class ProtrackerFormat(ModuleFormat):
 
         orderlist = []
 
-        for i in range(0, orderlist_length - 1):
+        for i in range(orderlist_length - 1):
             order = songbytes[songdata_ofs + 2 + i]
             orderlist.append(order)
 
@@ -58,34 +84,8 @@ class ProtrackerFormat(ModuleFormat):
 
     @classmethod
     def pitch_note(cls, pitch):
-        pitch2note = {
-            # Octave 0
-            1712: 'C-0', 1616: 'C#0', 1525: 'D-0', 1440: 'D#0', 1357: 'E-0',
-            1281: 'F-0', 1209: 'F#0', 1141: 'G-0', 1077: 'G#0', 1017: 'A-0',
-            961: 'A#0', 907: 'B-0',
-            # Octave 1
-            856: 'C-1', 808: 'C#1', 762: 'D-1', 720: 'D#1', 678: 'E-1',
-            640: 'F-1', 604: 'F#1', 570: 'G-1', 538: 'G#1 ', 508: 'A-1',
-            480: 'A#1', 453: 'B-1',
-            # Octave 2
-            428: 'C-2', 404: 'C#2', 381: 'D-2', 360: 'D#2', 339: 'E-2',
-            320: 'F-2', 302: 'F#2', 285: 'G-2', 269: 'G#2', 254: 'A-2',
-            240: 'A#2', 226: 'B-2',
-            # Octave 3
-            214: 'C-3', 202: 'C#3', 190: 'D-3', 180: 'D#3', 170: 'E-3',
-            160: 'F-3', 151: 'F#3', 143: 'G-3', 135: 'G#3', 127: 'A-3',
-            120: 'A#3', 113: 'B-3',
-            # Octave 4
-            107: 'C-4', 101: 'C#4', 95: 'D-4', 90: 'D#4', 85: 'E-4',
-            80: 'F-4', 76: 'F#4', 71: 'G-4', 67: 'G#4', 64: 'A-4',
-            60: 'A#4', 57: 'B-4',
-            # Octave 5
-            53: 'C-5', 50: 'C#5', 47: 'D-5', 45: 'D#5', 42: 'E-5',
-            40: 'F-5', 37: 'F#5', 35: 'G-5', 33: 'G#5', 31: ' A-5',
-            30: 'A#5', 28: 'B-5',
-        }
-        if pitch in pitch2note:
-            return pitch2note[pitch]
+        if pitch in ProtrackerFormat.pitchToNote:
+            return ProtrackerFormat.pitchToNote[pitch]
 
     @classmethod
     def parse_note(cls, notebytes):
@@ -103,7 +103,6 @@ class ProtrackerFormat(ModuleFormat):
         note.pitch = ((a & 0xf) << 8) + b
         if note.pitch != 0:
             note.note = ProtrackerFormat.pitch_note(note.pitch)
-
         return note
 
     @classmethod
@@ -111,16 +110,14 @@ class ProtrackerFormat(ModuleFormat):
         pattern = Pattern()
         pattern.length = 64
 
-        for i in range(song.num_channels - 1):
+        for i in range(song.num_channels):
             pattern.rows.append([])
 
-        for r in range(0, 63):
-            for c in range(song.num_channels - 1):
+        for r in range(pattern.length):
+            for c in range(song.num_channels):
                 ofs = r * song.num_channels * 4 + c * 4
-                # pattern.rows[c][i] = cls.parse_note(patternbytes[ofs:ofs+4])
                 pattern.rows[c].append(
                     cls.parse_note(patternbytes[ofs:ofs + 4]))
-
         return pattern
 
     # TODO add proper channel checks here
@@ -145,7 +142,7 @@ class ProtrackerFormat(ModuleFormat):
         song.name = str(songbytes[0:20], 'ascii').rstrip('\0')
         sample_length = 22 + 2 + 1 + 1 + 2 + 2
 
-        for i in range(0, 30):
+        for i in range(30):
             ofs = (20 + i * sample_length)
             samplechunk = songbytes[ofs:ofs + sample_length]
             fields = unpack('>22sHBBHH', samplechunk)
@@ -173,7 +170,7 @@ class ProtrackerFormat(ModuleFormat):
         pattern_size = song.num_channels * 64 * 4
         sampledata_ofs = patterndata_ofs + song.num_patterns * pattern_size
 
-        for i in range(0, song.num_patterns - 1):
+        for i in range(song.num_patterns - 1):
             ofs = patterndata_ofs + i * pattern_size
             pattern = cls.parse_pattern(
                 songbytes[ofs:ofs + pattern_size], song)
@@ -181,7 +178,7 @@ class ProtrackerFormat(ModuleFormat):
 
         # load sample data
         sample_ofs = sampledata_ofs
-        for i in range(0, 30):
+        for i in range(30):
             s = song.instruments[i].sample
 
             if s.length == 0:
