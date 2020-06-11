@@ -170,7 +170,7 @@ class ProtrackerFormat(ModuleFormat):
         pattern_size = song.num_channels * 64 * 4
         sampledata_ofs = patterndata_ofs + song.num_patterns * pattern_size
 
-        for i in range(song.num_patterns - 1):
+        for i in range(song.num_patterns):
             ofs = patterndata_ofs + i * pattern_size
             pattern = cls.parse_pattern(
                 songbytes[ofs:ofs + pattern_size], song)
