@@ -15,3 +15,6 @@ See `ripper.py -h` for details.
 
 MIT License. See `COPYING` for details.
 
+![Python Lint Check and Unittest](https://github.com/bkram/modrip/workflows/Python%20Lint%20Check%20and%20Unittest/badge.svg)
+
+
